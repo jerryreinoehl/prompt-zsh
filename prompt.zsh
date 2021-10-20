@@ -1,3 +1,8 @@
+# ============================================================================
+# prompt.zsh
+# v0.1.0
+# ============================================================================
+
 precmd() {
     # pipestatus will be overwritten after the first command
     __pipestatus="$pipestatus"
