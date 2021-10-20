@@ -3,13 +3,12 @@
 # v0.1.0
 # ============================================================================
 
-precmd() {
-    # pipestatus will be overwritten after the first command
-    __pipestatus="$pipestatus"
-    __prompt
-}
+precmd_functions+=(__prompt)
 
 __prompt() {
+    # pipestatus will be overwritten after the first command
+    __pipestatus="$pipestatus"
+
     local ptr branch error bgjobs REPLY
 
     __prompt_pointer; ptr="$REPLY"
