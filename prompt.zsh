@@ -13,6 +13,7 @@ PROMPT_COLOR[branch]="1;35"
 
 declare -A PROMPT_CHAR
 (( $UID == 0 )) && PROMPT_CHAR[ptr]="#" || PROMPT_CHAR[ptr]=">"
+PROMPT_CHAR[branch]=$'\u2387 '
 
 precmd_functions+=(__prompt)
 
@@ -60,7 +61,7 @@ __prompt_bgjobs() {
 }
 
 __prompt_branch() {
-    local head branch
+    local head branch color char
 
     __prompt_git_head "$PWD"; head="$REPLY"
 
@@ -68,7 +69,10 @@ __prompt_branch() {
     __prompt_git_branch "$head"; branch="$REPLY"
 
     [[ -z "$branch" ]] && REPLY="" && return
-    REPLY=$'%{\e['$PROMPT_COLOR[branch]$'m%}\u2387 '$branch$'%{\e[0m%}'
+
+    color=$PROMPT_COLOR[branch]
+    char=$PROMPT_CHAR[branch]
+    REPLY=$'%{\e['$color'm%}'$char$branch$'%{\e[0m%}'
 }
 
 __prompt_git_head() {
