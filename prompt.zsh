@@ -11,6 +11,9 @@ PROMPT_COLOR[error]="1;31"
 PROMPT_COLOR[bgjobs]="1;2;37"
 PROMPT_COLOR[branch]="1;35"
 
+declare -A PROMPT_CHAR
+(( $UID == 0 )) && PROMPT_CHAR[ptr]="#" || PROMPT_CHAR[ptr]=">"
+
 precmd_functions+=(__prompt)
 
 __prompt() {
@@ -35,9 +38,12 @@ __prompt() {
 }
 
 __prompt_pointer() {
+    local color
     [[ "$__pipestatus" =~ ^0( 0)*$ ]] \
-        && REPLY=$'%{\e['$PROMPT_COLOR[ptr]$'m%}%(!.#.>)%{\e[0m%}' \
-        || REPLY=$'%{\e['$PROMPT_COLOR[error]$'m%}%(!.#.>)%{\e[0m%}'
+        && color=$PROMPT_COLOR[ptr] \
+        || color=$PROMPT_COLOR[error]
+
+    REPLY=$'%{\e['$color'm%}'$PROMPT_CHAR[ptr]$'%{\e[0m%}'
 }
 
 __prompt_error() {
