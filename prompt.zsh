@@ -15,6 +15,9 @@ declare -A PROMPT_CHAR
 (( $UID == 0 )) && PROMPT_CHAR[ptr]="#" || PROMPT_CHAR[ptr]=">"
 PROMPT_CHAR[branch]=$'\u2387 '
 
+zle -N prompt-ps1 __prompt_ps1
+zle -N prompt-rps1 __prompt_rps1
+
 precmd_functions+=(__prompt)
 
 __prompt() {
@@ -24,20 +27,30 @@ __prompt() {
     && __prompt_error_occurred=0 \
     || __prompt_error_occurred=1
 
-  local ptr branch error bgjobs REPLY
+  __prompt_ps1
+  __prompt_rps1
+}
+
+__prompt_ps1() {
+  local ptr REPLY
 
   __prompt_pointer; ptr="$REPLY"
-  __prompt_error; error="$REPLY"
-  __prompt_bgjobs; bgjobs="$REPLY"
-  __prompt_branch; branch="$REPLY"
 
   PS1=$'%{\e['$PROMPT_COLOR[host]$'m%}%n@%m%{\e[0m%}'
   PS1+=$' %{\e['$PROMPT_COLOR[dir]$'m%}%1~%{\e[0m%}'
   PS1+=" $ptr "
+}
+
+__prompt_rps1() {
+  local branch error bgjobs REPLY
+
+  __prompt_error; error="$REPLY"
+  __prompt_bgjobs; bgjobs="$REPLY"
+  __prompt_branch; branch="$REPLY"
 
   RPS1=""
   [[ -n "$error" ]] && RPS1+="$error"
-  [[ -n "$bgjobs" ]] && RPS1+=" $bgjobs"
+  [[ -n "$bgjobs" ]] && rps1+=" $bgjobs"
   [[ -n "$branch" ]] && RPS1+=" $branch"
 }
 
