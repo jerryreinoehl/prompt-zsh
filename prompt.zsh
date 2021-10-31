@@ -20,6 +20,9 @@ precmd_functions+=(__prompt)
 __prompt() {
     # pipestatus will be overwritten after the first command
     __pipestatus="$pipestatus"
+    [[ "$__pipestatus" =~ ^0( 0)*$ ]] \
+        && __prompt_error_occurred=0 \
+        || __prompt_error_occurred=1
 
     local ptr branch error bgjobs REPLY
 
@@ -40,17 +43,17 @@ __prompt() {
 
 __prompt_pointer() {
     local color
-    [[ "$__pipestatus" =~ ^0( 0)*$ ]] \
-        && color=$PROMPT_COLOR[ptr] \
-        || color=$PROMPT_COLOR[error]
+    (( $__prompt_error_occurred )) \
+        && color=$PROMPT_COLOR[error] \
+        || color=$PROMPT_COLOR[ptr]
 
     REPLY=$'%{\e['$color'm%}'$PROMPT_CHAR[ptr]$'%{\e[0m%}'
 }
 
 __prompt_error() {
-    [[ "$__pipestatus" =~ ^0( 0)*$ ]] \
-        && REPLY="" \
-        || REPLY=$'%{\e['$PROMPT_COLOR[error]'m%}['$__pipestatus$']%{\e[0m%}'
+    (( $__prompt_error_occurred )) \
+        && REPLY=$'%{\e['$PROMPT_COLOR[error]'m%}['$__pipestatus$']%{\e[0m%}' \
+        || REPLY=""
 }
 
 __prompt_bgjobs() {
