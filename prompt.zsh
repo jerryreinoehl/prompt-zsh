@@ -17,6 +17,15 @@ PROMPT_CHAR[branch]=$'\u2387 '
 
 zle -N prompt-ps1 __prompt_ps1
 zle -N prompt-rps1 __prompt_rps1
+zle -N zle-keymap-select
+
+zle-keymap-select() {
+  local save_ptr="$PROMPT_CHAR[ptr]"
+  [[ "$KEYMAP" == "vicmd" ]] && PROMPT_CHAR[ptr]=":"
+  zle prompt-ps1
+  zle reset-prompt
+  PROMPT_CHAR[ptr]="$save_ptr"
+}
 
 precmd_functions+=(__prompt)
 
