@@ -59,7 +59,7 @@ __prompt_rps1() {
 
   RPS1=""
   [[ -n "$error" ]] && RPS1+="$error"
-  [[ -n "$bgjobs" ]] && rps1+=" $bgjobs"
+  [[ -n "$bgjobs" ]] && RPS1+=" $bgjobs"
   [[ -n "$branch" ]] && RPS1+=" $branch"
 }
 
