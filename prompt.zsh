@@ -34,7 +34,7 @@ __prompt() {
 __prompt_ps1() {
   local ptr REPLY
 
-  __prompt_pointer; ptr="$REPLY"
+  __prompt_ptr; ptr="$REPLY"
 
   PS1=$'%{\e['$PROMPT_COLOR[host]$'m%}%n@%m%{\e[0m%}'
   PS1+=$' %{\e['$PROMPT_COLOR[dir]$'m%}%1~%{\e[0m%}'
@@ -54,7 +54,7 @@ __prompt_rps1() {
   [[ -n "$branch" ]] && RPS1+=" $branch"
 }
 
-__prompt_pointer() {
+__prompt_ptr() {
   local color
   (( $__prompt_error_occurred )) \
     && color=$PROMPT_COLOR[error] \
