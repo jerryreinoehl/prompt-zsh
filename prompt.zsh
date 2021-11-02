@@ -89,18 +89,25 @@ __prompt_bgjobs() {
 }
 
 __prompt_branch() {
-  local head branch color char
+  local branch color char
 
-  __prompt_git_head "$PWD"; head="$REPLY"
-
-  [[ -z "$head" ]] && REPLY="" && return
-  __prompt_git_branch "$head"; branch="$REPLY"
+  __prompt_git_branch; branch="$REPLY"
 
   [[ -z "$branch" ]] && REPLY="" && return
 
   color=$PROMPT_COLOR[branch]
   char=$PROMPT_CHAR[branch]
   REPLY=$'%{\e['$color'm%}'$char$branch$'%{\e[0m%}'
+}
+
+__prompt_git_branch() {
+  local head ref
+
+  __prompt_git_head "$PWD"; head="$REPLY"
+  [[ -z "$head" ]] && REPLY="" && return
+
+  read ref < "$head"
+  [[ "$ref" =~ ^ref: ]] && REPLY="${ref##*/}" || REPLY="${ref:0:6}"
 }
 
 __prompt_git_head() {
@@ -111,11 +118,4 @@ __prompt_git_head() {
     [[ -r "$dir/.git/HEAD" ]] && REPLY="$dir/.git/HEAD" && return
     dir="${dir%/*}"
   done
-}
-
-__prompt_git_branch() {
-  local head="$1" ref
-
-  read ref < "$head"
-  [[ "$ref" =~ ^ref: ]] && REPLY="${ref##*/}" || REPLY="${ref:0:6}"
 }
