@@ -21,6 +21,7 @@ zle -N zle-keymap-select
 
 zle-keymap-select() {
   local save_ptr="$PROMPT_CHAR[ptr]"
+
   [[ "$KEYMAP" == "vicmd" ]] && PROMPT_CHAR[ptr]=":"
   zle prompt-ps1
   zle reset-prompt
@@ -65,7 +66,8 @@ __prompt_rps1() {
 
 __prompt_ptr() {
   local color
-  (( $__prompt_error_occurred )) \
+
+  (( __prompt_error_occurred )) \
     && color=$PROMPT_COLOR[error] \
     || color=$PROMPT_COLOR[ptr]
 
@@ -73,13 +75,14 @@ __prompt_ptr() {
 }
 
 __prompt_error() {
-  (( $__prompt_error_occurred )) \
+  (( __prompt_error_occurred )) \
     && REPLY=$'%{\e['$PROMPT_COLOR[error]'m%}['$__pipestatus$']%{\e[0m%}' \
     || REPLY=""
 }
 
 __prompt_bgjobs() {
   local -i num_jobs=${#jobtexts[@]}
+
   (( num_jobs > 0 )) \
     && REPLY=$'%{\e['$PROMPT_COLOR[bgjobs]'m%}*'$num_jobs$'%{\e[0m%}' \
     || REPLY=""
