@@ -54,7 +54,7 @@ __prompt_rps1() {
   local branch error bgjobs REPLY
 
   __prompt_error; error="$REPLY"
-  __prompt_bgjobs; bgjobs="$REPLY"
+  __prompt_jobs; bgjobs="$REPLY"
   __prompt_branch; branch="$REPLY"
 
   RPS1=""
@@ -79,7 +79,7 @@ __prompt_error() {
     || REPLY=""
 }
 
-__prompt_bgjobs() {
+__prompt_jobs() {
   local -i num_jobs=${#jobtexts[@]}
 
   (( num_jobs > 0 )) \
