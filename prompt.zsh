@@ -3,29 +3,28 @@
 # v0.4.0
 # ============================================================================
 
-declare -A PROMPT_COLOR
-PROMPT_COLOR[host]="1;32"
-PROMPT_COLOR[dir]="1;34"
-PROMPT_COLOR[ptr]="1"
-PROMPT_COLOR[error]="1;31"
-PROMPT_COLOR[bgjobs]="1;2;37"
-PROMPT_COLOR[branch]="1;35"
+declare -A PSCFG
+PSCFG[host.color]="1;32"
+PSCFG[dir.color]="1;34"
+PSCFG[ptr.color]="1"
+PSCFG[error.color]="1;31"
+PSCFG[jobs.color]="1;2;37"
+PSCFG[branch.color]="1;35"
 
-declare -A PROMPT_CHAR
-(( $UID == 0 )) && PROMPT_CHAR[ptr]="#" || PROMPT_CHAR[ptr]=">"
-PROMPT_CHAR[branch]=$'\u2387 '
+(( $UID == 0 )) && PSCFG[ptr]="#" || PSCFG[ptr]=">"
+PSCFG[branch]=$'\u2387 '
 
 zle -N prompt-ps1 __prompt_ps1
 zle -N prompt-rps1 __prompt_rps1
 zle -N zle-keymap-select
 
 zle-keymap-select() {
-  local save_ptr="$PROMPT_CHAR[ptr]"
+  local save_ptr="$PSCFG[ptr]"
 
-  [[ "$KEYMAP" == "vicmd" ]] && PROMPT_CHAR[ptr]=":"
+  [[ "$KEYMAP" == "vicmd" ]] && PSCFG[ptr]=":"
   zle prompt-ps1
   zle reset-prompt
-  PROMPT_CHAR[ptr]="$save_ptr"
+  PSCFG[ptr]="$save_ptr"
 }
 
 precmd_functions+=(__prompt)
@@ -46,8 +45,8 @@ __prompt_ps1() {
 
   __prompt_ptr; ptr="$REPLY"
 
-  PS1=$'%{\e['$PROMPT_COLOR[host]$'m%}%n@%m%{\e[0m%}'
-  PS1+=$' %{\e['$PROMPT_COLOR[dir]$'m%}%1~%{\e[0m%}'
+  PS1=$'%{\e['$PSCFG[host.color]$'m%}%n@%m%{\e[0m%}'
+  PS1+=$' %{\e['$PSCFG[dir.color]$'m%}%1~%{\e[0m%}'
   PS1+=" $ptr "
 }
 
@@ -68,15 +67,15 @@ __prompt_ptr() {
   local color
 
   (( __prompt_error_occurred )) \
-    && color=$PROMPT_COLOR[error] \
-    || color=$PROMPT_COLOR[ptr]
+    && color=$PSCFG[error.color] \
+    || color=$PSCFG[ptr.color]
 
-  REPLY=$'%{\e['$color'm%}'$PROMPT_CHAR[ptr]$'%{\e[0m%}'
+  REPLY=$'%{\e['$color'm%}'$PSCFG[ptr]$'%{\e[0m%}'
 }
 
 __prompt_error() {
   (( __prompt_error_occurred )) \
-    && REPLY=$'%{\e['$PROMPT_COLOR[error]'m%}['$__pipestatus$']%{\e[0m%}' \
+    && REPLY=$'%{\e['$PSCFG[error.color]'m%}['$__pipestatus$']%{\e[0m%}' \
     || REPLY=""
 }
 
@@ -84,7 +83,7 @@ __prompt_bgjobs() {
   local -i num_jobs=${#jobtexts[@]}
 
   (( num_jobs > 0 )) \
-    && REPLY=$'%{\e['$PROMPT_COLOR[bgjobs]'m%}*'$num_jobs$'%{\e[0m%}' \
+    && REPLY=$'%{\e['$PSCFG[jobs.color]'m%}*'$num_jobs$'%{\e[0m%}' \
     || REPLY=""
 }
 
@@ -95,8 +94,8 @@ __prompt_branch() {
 
   [[ -z "$branch" ]] && REPLY="" && return
 
-  color=$PROMPT_COLOR[branch]
-  char=$PROMPT_CHAR[branch]
+  color=$PSCFG[branch.color]
+  char=$PSCFG[branch]
   REPLY=$'%{\e['$color'm%}'$char$branch$'%{\e[0m%}'
 }
 
