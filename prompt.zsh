@@ -11,8 +11,11 @@ PSCFG[error.color]="1;31"
 PSCFG[jobs.color]="1;2;37"
 PSCFG[branch.color]="1;35"
 
+PSCFG[error]="[%s]"
+PSCFG[jobs]="*%s"
+PSCFG[branch]=$'\u2387 %s'
+
 (( $UID == 0 )) && PSCFG[ptr]="#" || PSCFG[ptr]=">"
-PSCFG[branch]=$'\u2387 '
 
 zle -N prompt-ps1 __prompt_ps1
 zle -N prompt-rps1 __prompt_rps1
@@ -75,7 +78,7 @@ __prompt_ptr() {
 
 __prompt_error() {
   (( __prompt_error_occurred )) \
-    && REPLY=$'%{\e['$PSCFG[error.color]'m%}['$__pipestatus$']%{\e[0m%}' \
+    && __prompt_fmt_str "$PSCFG[error.color]" "$PSCFG[error]" "$__pipestatus" \
     || REPLY=""
 }
 
@@ -83,7 +86,7 @@ __prompt_jobs() {
   local -i num_jobs=${#jobtexts[@]}
 
   (( num_jobs > 0 )) \
-    && REPLY=$'%{\e['$PSCFG[jobs.color]'m%}*'$num_jobs$'%{\e[0m%}' \
+    && __prompt_fmt_str "$PSCFG[jobs.color]" "$PSCFG[jobs]" "$num_jobs" \
     || REPLY=""
 }
 
@@ -94,9 +97,7 @@ __prompt_branch() {
 
   [[ -z "$branch" ]] && REPLY="" && return
 
-  color=$PSCFG[branch.color]
-  char=$PSCFG[branch]
-  REPLY=$'%{\e['$color'm%}'$char$branch$'%{\e[0m%}'
+  __prompt_fmt_str "$PSCFG[branch.color]" "$PSCFG[branch]" "$branch"
 }
 
 __prompt_git_branch() {
@@ -117,4 +118,10 @@ __prompt_git_head() {
     [[ -r "$dir/.git/HEAD" ]] && REPLY="$dir/.git/HEAD" && return
     dir="${dir%/*}"
   done
+}
+
+__prompt_fmt_str() {
+  local color="$1" fmt="$2" str="$3"
+
+  REPLY=$'%{\e['$color'm%}'${fmt//\%s/$str}$'%{\e[0m%}'
 }
