@@ -22,6 +22,7 @@ zle -N prompt-ps1 __prompt_ps1
 zle -N prompt-rps1 __prompt_rps1
 zle -N zle-keymap-select
 
+# Redraws prompt when switching between vicmd and viins.
 zle-keymap-select() {
   local save_prompt="$PSCFG[prompt.fmt]"
 
@@ -33,6 +34,7 @@ zle-keymap-select() {
 
 precmd_functions+=(__prompt)
 
+# Prompt entry point. Sets `PS1` and `RPS1`.
 __prompt() {
   # pipestatus will be overwritten after the first command
   __prompt_pipestatus="$pipestatus"
@@ -44,6 +46,7 @@ __prompt() {
   __prompt_rps1
 }
 
+# Sets `PS1`.
 __prompt_ps1() {
   local prmpt REPLY
 
@@ -54,6 +57,7 @@ __prompt_ps1() {
   PS1+=" $prmpt "
 }
 
+# Sets `RPS1`.
 __prompt_rps1() {
   local branch error bgjobs REPLY
 
@@ -67,6 +71,7 @@ __prompt_rps1() {
   [[ -n "$branch" ]] && RPS1+=" $branch"
 }
 
+# Returns the PS1 `prompt` component in `REPLY`.
 __prompt_prompt() {
   local color
 
@@ -77,6 +82,7 @@ __prompt_prompt() {
   REPLY=$'%{\e['$color'm%}'$PSCFG[prompt.fmt]$'%{\e[0m%}'
 }
 
+# Returns the PS1 `error` component in `REPLY`.
 __prompt_error() {
   (( __prompt_error_occurred )) \
     && __prompt_fmt_str "$PSCFG[error.color]" "$PSCFG[error.fmt]" \
@@ -84,6 +90,7 @@ __prompt_error() {
     || REPLY=""
 }
 
+# Returns the PS1 `jobs` component in `REPLY`.
 __prompt_jobs() {
   local -i num_jobs=${#jobtexts[@]}
 
@@ -92,6 +99,7 @@ __prompt_jobs() {
     || REPLY=""
 }
 
+# Returns the PS1 `branch` component in `REPLY`.
 __prompt_branch() {
   local branch color char
 
@@ -102,6 +110,7 @@ __prompt_branch() {
   __prompt_fmt_str "$PSCFG[branch.color]" "$PSCFG[branch.fmt]" "$branch"
 }
 
+# Returns git branch in `REPLY` (empty if no branch found).
 __prompt_git_branch() {
   local head ref
 
@@ -112,6 +121,7 @@ __prompt_git_branch() {
   [[ "$ref" =~ ^ref: ]] && REPLY="${ref##*/}" || REPLY="${ref:0:6}"
 }
 
+# Returns git head file in `REPLY` (empty if no file found).
 __prompt_git_head() {
   local dir="$1"
   REPLY=""
@@ -122,6 +132,10 @@ __prompt_git_head() {
   done
 }
 
+# Returns string formatted for `PS1` or `RPS1` in `REPLY`.
+# $1 - color code (ex. "1;31").
+# $2 - format string (ex. "%s").
+# $3 - string var, replaces "%s" in format string.
 __prompt_fmt_str() {
   local color="$1" fmt="$2" str="$3"
 
