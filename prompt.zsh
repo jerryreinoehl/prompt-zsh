@@ -16,6 +16,7 @@ PSCFG[jobs]="*%s"
 PSCFG[branch]=$'\u2387 %s'
 
 (( $UID == 0 )) && PSCFG[ptr]="#" || PSCFG[ptr]=">"
+PSCFG[ptr.vicmd]=":"
 
 zle -N prompt-ps1 __prompt_ps1
 zle -N prompt-rps1 __prompt_rps1
@@ -24,7 +25,7 @@ zle -N zle-keymap-select
 zle-keymap-select() {
   local save_ptr="$PSCFG[ptr]"
 
-  [[ "$KEYMAP" == "vicmd" ]] && PSCFG[ptr]=":"
+  [[ "$KEYMAP" == "vicmd" ]] && PSCFG[ptr]="$PSCFG[ptr.vicmd]"
   zle prompt-ps1
   zle reset-prompt
   PSCFG[ptr]="$save_ptr"
