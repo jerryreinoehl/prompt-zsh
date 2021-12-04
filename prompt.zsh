@@ -35,8 +35,8 @@ precmd_functions+=(__prompt)
 
 __prompt() {
   # pipestatus will be overwritten after the first command
-  __pipestatus="$pipestatus"
-  [[ "$__pipestatus" =~ ^0( 0)*$ ]] \
+  __prompt_pipestatus="$pipestatus"
+  [[ "$__prompt_pipestatus" =~ ^0( 0)*$ ]] \
     && __prompt_error_occurred=0 \
     || __prompt_error_occurred=1
 
@@ -79,7 +79,8 @@ __prompt_ptr() {
 
 __prompt_error() {
   (( __prompt_error_occurred )) \
-    && __prompt_fmt_str "$PSCFG[error.color]" "$PSCFG[error]" "$__pipestatus" \
+    && __prompt_fmt_str "$PSCFG[error.color]" "$PSCFG[error]" \
+                        "$__prompt_pipestatus" \
     || REPLY=""
 }
 
