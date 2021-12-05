@@ -121,7 +121,7 @@ __prompt_git_branch() {
   [[ "$ref" =~ ^ref: ]] && REPLY="${ref##*/}" || REPLY="${ref:0:6}"
 }
 
-# Returns git head file in `REPLY` (empty if no file found).
+# Returns git HEAD file path in `REPLY` (empty if no file found).
 __prompt_git_head() {
   local dir="$1"
   REPLY=""
