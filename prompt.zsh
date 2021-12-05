@@ -15,7 +15,7 @@ PSCFG[error.fmt]="[%s]"
 PSCFG[jobs.fmt]="*%s"
 PSCFG[branch.fmt]=$'\u2387 %s'
 
-(( $UID == 0 )) && PSCFG[prompt.fmt]="#" || PSCFG[prompt.fmt]=">"
+(( UID == 0 )) && PSCFG[prompt.fmt]="#" || PSCFG[prompt.fmt]=">"
 PSCFG[prompt.vicmd_fmt]=":"
 
 zle -N prompt-ps1 __prompt_ps1
