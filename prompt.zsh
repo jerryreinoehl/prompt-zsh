@@ -4,6 +4,7 @@
 # ============================================================================
 
 declare -A PSCFG
+PSCFG[version]="1.0.0"
 PSCFG[host.color]="1;32"
 PSCFG[dir.color]="1;34"
 PSCFG[prompt.color]="1"
