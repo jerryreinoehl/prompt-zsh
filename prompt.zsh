@@ -9,11 +9,11 @@ PSCFG[dir.color]="1;34"
 PSCFG[prompt.color]="1"
 PSCFG[error.color]="1;31"
 PSCFG[jobs.color]="1;2;37"
-PSCFG[branch.color]="1;35"
+PSCFG[vcs.color]="1;35"
 
 PSCFG[error.fmt]="[%s]"
 PSCFG[jobs.fmt]="*%s"
-PSCFG[branch.fmt]=$'\u2387 %s'
+PSCFG[vcs.fmt]=$'\u2387 %s'
 
 (( UID == 0 )) && PSCFG[prompt.fmt]="#" || PSCFG[prompt.fmt]=">"
 PSCFG[prompt.vicmd_fmt]=":"
@@ -59,16 +59,16 @@ __prompt_ps1() {
 
 # Sets `RPS1`.
 __prompt_rps1() {
-  local branch error bgjobs REPLY
+  local vcs error bgjobs REPLY
 
   [[ -n "$PSCFG[error.fmt]" ]] && __prompt_error; error="$REPLY"
   [[ -n "$PSCFG[jobs.fmt]" ]] && __prompt_jobs; bgjobs="$REPLY"
-  [[ -n "$PSCFG[branch.fmt]" ]] && __prompt_branch; branch="$REPLY"
+  [[ -n "$PSCFG[vcs.fmt]" ]] && __prompt_vcs; vcs="$REPLY"
 
   RPS1=""
   [[ -n "$error" ]] && RPS1+="$error"
   [[ -n "$bgjobs" ]] && RPS1+=" $bgjobs"
-  [[ -n "$branch" ]] && RPS1+=" $branch"
+  [[ -n "$vcs" ]] && RPS1+=" $vcs"
 }
 
 # Returns the PS1 `prompt` component in `REPLY`.
@@ -99,15 +99,15 @@ __prompt_jobs() {
     || REPLY=""
 }
 
-# Returns the PS1 `branch` component in `REPLY`.
-__prompt_branch() {
-  local branch color char
+# Returns the PS1 `vcs` component in `REPLY`.
+__prompt_vcs() {
+  local vcs color char
 
-  __prompt_git_branch; branch="$REPLY"
+  __prompt_git_branch; vcs="$REPLY"
 
-  [[ -z "$branch" ]] && REPLY="" && return
+  [[ -z "$vcs" ]] && REPLY="" && return
 
-  __prompt_fmt_str "$PSCFG[branch.color]" "$PSCFG[branch.fmt]" "$branch"
+  __prompt_fmt_str "$PSCFG[vcs.color]" "$PSCFG[vcs.fmt]" "$vcs"
 }
 
 # Returns git branch in `REPLY` (empty if no branch found).
