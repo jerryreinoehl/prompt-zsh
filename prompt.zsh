@@ -13,7 +13,7 @@ PSCFG[vcs.color]="1;35"
 
 PSCFG[error.fmt]="[%s]"
 PSCFG[jobs.fmt]="*%s"
-PSCFG[vcs.fmt]=$'\u2387 %s'
+PSCFG[vcs.fmt]="(%s)"
 
 (( UID == 0 )) && PSCFG[prompt.fmt]="#" || PSCFG[prompt.fmt]=">"
 PSCFG[prompt.vicmd_fmt]=":"
