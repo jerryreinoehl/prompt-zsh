@@ -6,6 +6,7 @@
 declare -A PSCFG
 PSCFG[version]="1.0.0"
 
+PSCFG[venv.color]="1;33"
 PSCFG[host.color]="1;32"
 PSCFG[dir.color]="1;34"
 PSCFG[prompt.color]="1"
@@ -13,6 +14,7 @@ PSCFG[error.color]="1;31"
 PSCFG[jobs.color]="1;2;37"
 PSCFG[vcs.color]="1;35"
 
+PSCFG[venv.fmt]="(%s)"
 PSCFG[error.fmt]="[%s]"
 PSCFG[jobs.fmt]="*%s"
 PSCFG[vcs.fmt]="(%s)"
@@ -50,11 +52,14 @@ __prompt() {
 
 # Sets `PS1`.
 __prompt_ps1() {
-  local prmpt REPLY
+  local venv prmpt REPLY
 
+  [[ -n "$PSCFG[venv.fmt]" ]] && __prompt_venv; venv="$REPLY"
   __prompt_prompt; prmpt="$REPLY"
 
-  PS1=$'%{\e['$PSCFG[host.color]$'m%}%n@%m%{\e[0m%}'
+  PS1=""
+  [[ -n "$venv" ]] && PS1+="$venv "
+  PS1+=$'%{\e['$PSCFG[host.color]$'m%}%n@%m%{\e[0m%}'
   PS1+=$' %{\e['$PSCFG[dir.color]$'m%}%1~%{\e[0m%}'
   PS1+=" $prmpt "
 }
@@ -71,6 +76,14 @@ __prompt_rps1() {
   [[ -n "$error" ]] && RPS1+="$error"
   [[ -n "$bgjobs" ]] && RPS1+=" $bgjobs"
   [[ -n "$vcs" ]] && RPS1+=" $vcs"
+}
+
+# Returns the PS1 `venv` component in `REPLY`.
+__prompt_venv() {
+  [[ -z "$VIRTUAL_ENV" ]] && REPLY="" && return
+
+  __prompt_fmt_str "$PSCFG[venv.color]" "$PSCFG[venv.fmt]" \
+                   "${VIRTUAL_ENV##*/}"
 }
 
 # Returns the PS1 `prompt` component in `REPLY`.
