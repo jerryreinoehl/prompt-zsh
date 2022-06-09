@@ -23,7 +23,7 @@ PSCFG[cursor]="5"
 PSCFG[vicmd.cursor]="1"
 
 (( UID == 0 )) && PSCFG[prompt.fmt]="#" || PSCFG[prompt.fmt]=">"
-PSCFG[prompt.vicmd_fmt]=":"
+PSCFG[vicmd.prompt.fmt]=":"
 
 zle -N prompt-ps1 __prompt_ps1
 zle -N prompt-rps1 __prompt_rps1
@@ -35,7 +35,7 @@ zle-keymap-select() {
   local save_cursor="$PSCFG[cursor]"
 
   [[ "$KEYMAP" == "vicmd" ]] \
-    && PSCFG[prompt.fmt]="$PSCFG[prompt.vicmd_fmt]" \
+    && PSCFG[prompt.fmt]="$PSCFG[vicmd.prompt.fmt]" \
     && PSCFG[cursor]="$PSCFG[vicmd.cursor]"
 
   zle prompt-ps1
