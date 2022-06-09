@@ -19,11 +19,11 @@ PSCFG[error.fmt]="[%s]"
 PSCFG[jobs.fmt]="*%s"
 PSCFG[vcs.fmt]="(%s)"
 
-PSCFG[cursor]="5"
-PSCFG[vicmd.cursor]="1"
-
 (( UID == 0 )) && PSCFG[prompt.fmt]="#" || PSCFG[prompt.fmt]=">"
 PSCFG[vicmd.prompt.fmt]=":"
+
+PSCFG[cursor]="5"
+PSCFG[vicmd.cursor]="1"
 
 zle -N prompt-ps1 __prompt_ps1
 zle -N prompt-rps1 __prompt_rps1
