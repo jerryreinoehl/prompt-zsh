@@ -15,11 +15,12 @@ PSCFG[jobs.color]="1;2;37"
 PSCFG[vcs.color]="1;35"
 
 PSCFG[venv.fmt]="(%s)"
+PSCFG[prompt.fmt]=">"
 PSCFG[error.fmt]="[%s]"
 PSCFG[jobs.fmt]="*%s"
 PSCFG[vcs.fmt]="(%s)"
 
-(( UID == 0 )) && PSCFG[prompt.fmt]="#" || PSCFG[prompt.fmt]=">"
+(( UID == 0 )) && PSCFG[host.color]="1;31" && PSCFG[prompt.fmt]="#"
 PSCFG[vicmd.prompt.fmt]=":"
 
 PSCFG[cursor]="5"
