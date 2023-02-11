@@ -67,7 +67,7 @@ __prompt() {
 __prompt_ps1() {
   local venv prmpt dir_color REPLY
 
-  [[ -n "$PSCFG[venv.fmt]" ]] && __prompt_venv; venv="$REPLY"
+  [[ -n "$PSCFG[venv.fmt]" ]] && __prompt_venv && venv="$REPLY"
   __prompt_prompt; prmpt="$REPLY"
 
   [[ -w . ]] \
@@ -87,9 +87,9 @@ __prompt_ps1() {
 __prompt_rps1() {
   local vcs error bgjobs REPLY
 
-  [[ -n "$PSCFG[error.fmt]" ]] && __prompt_error; error="$REPLY"
-  [[ -n "$PSCFG[jobs.fmt]" ]] && __prompt_jobs; bgjobs="$REPLY"
-  [[ -n "$PSCFG[vcs.fmt]" ]] && __prompt_vcs; vcs="$REPLY"
+  [[ -n "$PSCFG[error.fmt]" ]] && __prompt_error && error="$REPLY"
+  [[ -n "$PSCFG[jobs.fmt]" ]] && __prompt_jobs && bgjobs="$REPLY"
+  [[ -n "$PSCFG[vcs.fmt]" ]] && __prompt_vcs && vcs="$REPLY"
 
   RPS1=""
   [[ -n "$error" ]] && RPS1+="$error"
