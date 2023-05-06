@@ -18,7 +18,11 @@ PSCFG[error.color]="1;31"
 PSCFG[jobs.color]="1;2;37"
 PSCFG[vcs.color]="1;35"
 
+PSCFG[minimal.prompt.color]="1;35"
 PSCFG[minimal.prompt.venv.color]="1;33"
+PSCFG[minimal.prompt.error.color]="1;31"
+PSCFG[minimal.prompt.error.ro.color]=" "
+PSCFG[minimal.prompt.ro.color]="+2"
 
 PSCFG[venv.fmt]="(%s)"
 PSCFG[prompt.fmt]=">"
@@ -119,10 +123,17 @@ __prompt_venv() {
 # Returns the PS1 `prompt` component in `REPLY`.
 __prompt_prompt() {
   local color
+  local rocolor
   local fmt
 
   __prompt_get_component "prompt" "color"; color="$PSCFG[$REPLY]"
   __prompt_get_component "prompt" "fmt"; fmt="$PSCFG[$REPLY]"
+
+  if [[ ! -w . ]]; then
+    __prompt_get_component "prompt" "ro.color"; rocolor="$PSCFG[$REPLY]"
+    [[ "${rocolor[1]}" == "+" ]] && color="$color;${rocolor:1}"
+  fi
+
   REPLY=$'%{\e['$color'm%}'$fmt$'%{\e[0m%}'
 }
 
