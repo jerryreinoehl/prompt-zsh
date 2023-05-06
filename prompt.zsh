@@ -6,14 +6,19 @@
 declare -A PSCFG
 PSCFG[version]="3.0.0"
 
+PSCFG[mode]=""
+
 PSCFG[venv.color]="3;33"
 PSCFG[host.color]="1;32"
 PSCFG[cwd.color]="1;34"
 PSCFG[cwd.ro.color]="1;2;3;34"
 PSCFG[prompt.color]="1"
+PSCFG[prompt.error.color]="1;31"
 PSCFG[error.color]="1;31"
 PSCFG[jobs.color]="1;2;37"
 PSCFG[vcs.color]="1;35"
+
+PSCFG[minimal.prompt.venv.color]="1;33"
 
 PSCFG[venv.fmt]="(%s)"
 PSCFG[prompt.fmt]=">"
@@ -75,9 +80,11 @@ __prompt_ps1() {
     || cwd_color="$PSCFG[cwd.ro.color]"
 
   PS1=""
-  [[ -n "$venv" ]] && PS1+="$venv "
-  PS1+=$'%{\e['$PSCFG[host.color]$'m%}%n@%m%{\e[0m%}'
-  PS1+=$' %{\e['$cwd_color$'m%}%1~%{\e[0m%}'
+  if [[ "$PSCFG[mode]" != "minimal" ]]; then
+    [[ -n "$venv" ]] && PS1+="$venv "
+    PS1+=$'%{\e['$PSCFG[host.color]$'m%}%n@%m%{\e[0m%}'
+    PS1+=$' %{\e['$cwd_color$'m%}%1~%{\e[0m%}'
+  fi
   PS1+=" $prmpt "
 
   __prompt_set_cursor "$PSCFG[cursor]"
@@ -108,12 +115,11 @@ __prompt_venv() {
 # Returns the PS1 `prompt` component in `REPLY`.
 __prompt_prompt() {
   local color
+  local fmt
 
-  (( __prompt_error_occurred )) \
-    && color=$PSCFG[error.color] \
-    || color=$PSCFG[prompt.color]
-
-  REPLY=$'%{\e['$color'm%}'$PSCFG[prompt.fmt]$'%{\e[0m%}'
+  __prompt_get_component "prompt" "color"; color="$PSCFG[$REPLY]"
+  __prompt_get_component "prompt" "fmt"; fmt="$PSCFG[$REPLY]"
+  REPLY=$'%{\e['$color'm%}'$fmt$'%{\e[0m%}'
 }
 
 # Returns the PS1 `error` component in `REPLY`.
