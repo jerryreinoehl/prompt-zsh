@@ -187,3 +187,38 @@ __prompt_fmt_str() {
 __prompt_set_cursor() {
   echo -ne "\e[$1 q"
 }
+
+# Returns the first existing component corresponding to the current mode and
+# state of the prompt.
+#
+# Returns first found in `REPLY`:
+#   1. <mode>.<obj>.<state>.<attr>
+#   2. <mode>.<obj>.<attr>
+#   3. <obj>.<state>.<attr>
+#   4. <obj>.<attr>  <-- (default - always returns)
+#
+# $1 - object (ex. "prompt").
+# $2 - attribute (ex. "color").
+__prompt_get_component() {
+  local obj="$1"
+  local attr="$2"
+  local mode="$PSCFG[mode]"
+  local state
+
+  if (( __prompt_error_occurred )); then
+    state="error"
+  elif [[ -n "$VIRTUAL_ENV" ]]; then
+    state="venv"
+  fi
+
+  [[ -n "$PSCFG[$mode.$obj.$state.$attr]" ]] \
+    && REPLY="$mode.$obj.$state.$attr" \
+    && return
+
+  [[ -n "$PSCFG[$mode.$obj.$attr]" ]] && REPLY="$mode.$obj.$attr" && return
+
+  [[ -n "$PSCFG[$obj.$state.$attr]" ]] && REPLY="$obj.$state.$attr" && return
+
+  REPLY="$obj.$attr"
+  return
+}
