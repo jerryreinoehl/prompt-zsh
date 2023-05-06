@@ -8,8 +8,8 @@ PSCFG[version]="2.2.0"
 
 PSCFG[venv.color]="3;33"
 PSCFG[host.color]="1;32"
-PSCFG[dir.color]="1;34"
-PSCFG[dir.ro.color]="1;2;3;34"
+PSCFG[cwd.color]="1;34"
+PSCFG[cwd.ro.color]="1;2;3;34"
 PSCFG[prompt.color]="1"
 PSCFG[error.color]="1;31"
 PSCFG[jobs.color]="1;2;37"
@@ -65,19 +65,19 @@ __prompt() {
 
 # Sets `PS1`.
 __prompt_ps1() {
-  local venv prmpt dir_color REPLY
+  local venv prmpt cwd_color REPLY
 
   [[ -n "$PSCFG[venv.fmt]" ]] && __prompt_venv && venv="$REPLY"
   __prompt_prompt; prmpt="$REPLY"
 
   [[ -w . ]] \
-    && dir_color="$PSCFG[dir.color]" \
-    || dir_color="$PSCFG[dir.ro.color]"
+    && cwd_color="$PSCFG[cwd.color]" \
+    || cwd_color="$PSCFG[cwd.ro.color]"
 
   PS1=""
   [[ -n "$venv" ]] && PS1+="$venv "
   PS1+=$'%{\e['$PSCFG[host.color]$'m%}%n@%m%{\e[0m%}'
-  PS1+=$' %{\e['$dir_color$'m%}%1~%{\e[0m%}'
+  PS1+=$' %{\e['$cwd_color$'m%}%1~%{\e[0m%}'
   PS1+=" $prmpt "
 
   __prompt_set_cursor "$PSCFG[cursor]"
