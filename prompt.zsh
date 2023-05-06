@@ -39,7 +39,10 @@ PSCFG[preexec.cursor]="1"
 
 zle -N prompt-ps1 __prompt_ps1
 zle -N prompt-rps1 __prompt_rps1
+zle -N prompt-next-mode __prompt_next_mode
 zle -N zle-keymap-select
+
+bindkey '^\' prompt-next-mode
 
 # Redraws prompt when switching between vicmd and viins.
 zle-keymap-select() {
@@ -191,6 +194,14 @@ __prompt_git_head() {
 __prompt_preexec() {
   [[ -n "$PSCFG[preexec.cursor]" ]] \
     && __prompt_set_cursor "$PSCFG[preexec.cursor]"
+}
+
+# Switch to next mode and redraw prompt.
+__prompt_next_mode() {
+  [[ "$PSCFG[mode]" == "" ]] && PSCFG[mode]="minimal" || PSCFG[mode]=""
+
+  zle prompt-ps1
+  zle reset-prompt
 }
 
 # Returns string formatted for `PS1` or `RPS1` in `REPLY`.
