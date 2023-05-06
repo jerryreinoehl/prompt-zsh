@@ -205,7 +205,7 @@ __prompt_set_cursor() {
 #   1. <mode>.<obj>.<state>.<attr>
 #   2. <mode>.<obj>.<attr>
 #   3. <obj>.<state>.<attr>
-#   4. <obj>.<attr>  <-- (default - always returns)
+#   4. <obj>.<attr>
 #
 # $1 - object (ex. "prompt").
 # $2 - attribute (ex. "color").
@@ -214,6 +214,8 @@ __prompt_get_component() {
   local attr="$2"
   local mode="$PSCFG[mode]"
   local state
+  local check
+  REPLY=""
 
   if (( __prompt_error_occurred )); then
     state="error"
@@ -221,14 +223,14 @@ __prompt_get_component() {
     state="venv"
   fi
 
-  [[ -n "$PSCFG[$mode.$obj.$state.$attr]" ]] \
-    && REPLY="$mode.$obj.$state.$attr" \
-    && return
+  local -a checks=(
+    "$mode.$obj.$state.$attr"
+    "$mode.$obj.$attr"
+    "$obj.$state.$attr"
+    "$obj.$attr"
+  )
 
-  [[ -n "$PSCFG[$mode.$obj.$attr]" ]] && REPLY="$mode.$obj.$attr" && return
-
-  [[ -n "$PSCFG[$obj.$state.$attr]" ]] && REPLY="$obj.$state.$attr" && return
-
-  REPLY="$obj.$attr"
-  return
+  for check in "${checks[@]}"; do
+    [[ -n "$PSCFG[$check]" ]] && REPLY="$check" && return
+  done
 }
