@@ -106,10 +106,14 @@ __prompt_rps1() {
 
 # Returns the PS1 `venv` component in `REPLY`.
 __prompt_venv() {
-  [[ -z "$VIRTUAL_ENV" ]] && REPLY="" && return
+  local venv
+  REPLY=""
+
+  [[ -z "$VIRTUAL_ENV_PROMPT" ]] && return
+  [[ "$VIRTUAL_ENV_PROMPT" =~ '^\((.*)\)' ]] && venv="${match[1]}" || return
 
   __prompt_fmt_str "$PSCFG[venv.color]" "$PSCFG[venv.fmt]" \
-                   "${VIRTUAL_ENV##*/}"
+                   "$venv"
 }
 
 # Returns the PS1 `prompt` component in `REPLY`.
