@@ -60,8 +60,9 @@ zle-keymap-select() {
   PSCFG[cursor]="$save_cursor"
 }
 
-precmd_functions+=(__prompt)
-preexec_functions+=(__prompt_preexec)
+(( $precmd_functions[(Ie)__prompt] )) || precmd_functions+=(__prompt)
+(( $preexec_functions[(Ie)__prompt_preexec] )) \
+  || preexec_functions+=(__prompt_preexec)
 
 # Prompt entry point. Sets `PS1` and `RPS1`.
 __prompt() {
