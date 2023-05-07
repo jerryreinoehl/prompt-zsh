@@ -6,8 +6,6 @@
 declare -A PSCFG
 PSCFG[version]="3.0.0"
 
-PSCFG[mode]=""
-
 PSCFG[venv.color]="3;33"
 PSCFG[host.color]="1;32"
 PSCFG[cwd.color]="1;34"
