@@ -116,7 +116,9 @@ __prompt_venv() {
   REPLY=""
 
   [[ -z "$VIRTUAL_ENV_PROMPT" ]] && return
-  [[ "$VIRTUAL_ENV_PROMPT" =~ '^\((.*)\)' ]] && venv="${match[1]}" || return
+  [[ "$VIRTUAL_ENV_PROMPT" =~ '^\((.*)\)' ]] \
+    && venv="${match[1]}" \
+    || venv="$VIRTUAL_ENV_PROMPT"
 
   __prompt_fmt_str "$PSCFG[venv.color]" "$PSCFG[venv.fmt]" \
                    "$venv"
