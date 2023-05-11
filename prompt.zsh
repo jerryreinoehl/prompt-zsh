@@ -15,6 +15,7 @@ PSCFG[prompt.error.color]="1;31"
 PSCFG[error.color]="1;31"
 PSCFG[jobs.color]="1;2;37"
 PSCFG[vcs.color]="1;35"
+PSCFG[vcs.dirty.color]="1;35"
 
 PSCFG[minimal.prompt.color]="1;35"
 PSCFG[minimal.prompt.venv.color]="1;33"
@@ -27,6 +28,7 @@ PSCFG[prompt.fmt]=">"
 PSCFG[error.fmt]="[%s]"
 PSCFG[jobs.fmt]="*%s"
 PSCFG[vcs.fmt]="(%s)"
+PSCFG[vcs.dirty.fmt]="+(%s)"
 
 (( UID == 0 )) && PSCFG[host.color]="1;31" && PSCFG[prompt.fmt]="#"
 PSCFG[vicmd.prompt.fmt]=":"
@@ -160,13 +162,21 @@ __prompt_jobs() {
 
 # Returns the PS1 `vcs` component in `REPLY`.
 __prompt_vcs() {
-  local vcs color char
+  local vcs
+  local color="$PSCFG[vcs.color]"
+  local fmt="$PSCFG[vcs.fmt]"
 
   __prompt_git_branch; vcs="$REPLY"
 
   [[ -z "$vcs" ]] && REPLY="" && return
 
-  __prompt_fmt_str "$PSCFG[vcs.color]" "$PSCFG[vcs.fmt]" "$vcs"
+  # Check for uncommitted changes.
+  git diff --quiet --ignore-submodules HEAD || {
+    color="$PSCFG[vcs.dirty.color]"
+    fmt="$PSCFG[vcs.dirty.fmt]"
+  }
+
+  __prompt_fmt_str "$color" "$fmt" "$vcs"
 }
 
 # Returns git branch in `REPLY` (empty if no branch found).
