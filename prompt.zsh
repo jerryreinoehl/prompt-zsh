@@ -246,8 +246,8 @@ __prompt_get_component() {
   local obj="$1"
   local attr="$2"
   local mode="$PSCFG[mode]"
-  local state
-  local check
+  local state check
+  local -a checks
   REPLY=""
 
   if (( __prompt_error_occurred )); then
@@ -256,7 +256,7 @@ __prompt_get_component() {
     state="venv"
   fi
 
-  local -a checks=(
+  checks=(
     "$mode.$obj.$state.$attr"
     "$mode.$obj.$attr"
     "$obj.$state.$attr"
