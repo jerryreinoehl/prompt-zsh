@@ -162,7 +162,7 @@ __prompt_jobs() {
 
 # Returns the PS1 `vcs` component in `REPLY`.
 __prompt_vcs() {
-  local vcs
+  local vcs rc
   local color="$PSCFG[vcs.color]"
   local fmt="$PSCFG[vcs.fmt]"
 
@@ -171,7 +171,8 @@ __prompt_vcs() {
   [[ -z "$vcs" ]] && REPLY="" && return
 
   # Check for uncommitted changes.
-  git diff --quiet --ignore-submodules HEAD || {
+  git diff --quiet --ignore-submodules HEAD >& /dev/null; rc=$?
+  (( rc == 1 )) && {
     color="$PSCFG[vcs.dirty.color]"
     fmt="$PSCFG[vcs.dirty.fmt]"
   }
